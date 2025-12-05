@@ -1,10 +1,61 @@
 import formatDate from '../../commons/utils/format-date'
 
-export default function(
-  doc,
-  {
-    digitableLine,
-    paymentPlace,
+/**
+ * Renderiza o cabeçalho (header/recibo) do boleto da Caixa Econômica Federal
+ *
+ * @param {Object} doc - Instância do PDFKit document
+ * @param {Object} _ref - Dados do boleto
+ * @param {string} _ref.digitableLine - Linha digitável do boleto
+ * @param {string} _ref.paymentPlace - Local de pagamento
+ * @param {string} _ref.beneficiary - Nome do beneficiário (cedente)
+ * @param {string} _ref.beneficiaryAddress - Endereço do beneficiário
+ * @param {string} _ref.agency - Número da agência
+ * @param {string} _ref.agencyDigit - Dígito verificador da agência
+ * @param {string} _ref.account - Número da conta
+ * @param {string} _ref.accountDigit - Dígito verificador da conta
+ * @param {Date|string} _ref.expirationDay - Data de vencimento
+ * @param {Date|string} _ref.documentDate - Data do documento
+ * @param {Date|string} _ref.processingDate - Data de processamento
+ * @param {string} _ref.documentType - Tipo/Espécie do documento
+ * @param {string} _ref.accept - Aceite (S/N)
+ * @param {string} _ref.card - Carteira
+ * @param {string} _ref.documentNumber - Número do documento
+ * @param {string} _ref.formatedOurNumber - Nosso número formatado
+ * @param {string} _ref.formatedValue - Valor do documento formatado
+ * @param {string} _ref.descountValue - Valor de desconto
+ * @param {string} _ref.otherDiscounts - Outras deduções
+ * @param {string} _ref.feeValue - Valor de mora/multa
+ * @param {string} _ref.outherFees - Outros acréscimos
+ * @param {string} _ref.chargeValue - Valor cobrado
+ * @param {Object} _ref.recibo - Dados do recibo
+ * @param {Object} _ref.recibo.payer - Dados do pagador no recibo
+ * @param {Object} [_ref.recibo.guarantor] - Dados do avalista no recibo
+ * @param {Object} _ref.payer - Dados do pagador
+ * @param {Object} [_ref.guarantor] - Dados do avalista (opcional)
+ * @param {string} _ref.bank - Código do banco
+ * @param {string} _ref.instructions - Instruções de pagamento
+ * @param {string} _ref.currencyType - Tipo de moeda
+ * @param {Object} _ref2 - Configurações de layout
+ * @param {number} _ref2.startY - Posição Y inicial
+ * @param {number} _ref2.startX - Posição X inicial
+ * @param {number} _ref2.smallGutterY - Espaçamento vertical pequeno
+ * @param {number} _ref2.smallGutterX - Espaçamento horizontal pequeno
+ * @param {number} _ref2.line - Espessura da linha
+ * @param {number} _ref2.tableLimit - Limite da tabela
+ * @param {string} _ref2.lineColor - Cor das linhas
+ * @param {number} _ref2.boxHeight - Altura das caixas
+ * @param {number} _ref2.gutterX - Espaçamento horizontal
+ * @param {number} _ref2.gutterY - Espaçamento vertical
+ * @param {number} _ref2.smallFontSize - Tamanho da fonte pequena
+ * @param {number} _ref2.fontSize - Tamanho da fonte padrão
+ * @param {number} _ref2.largefontSize - Tamanho da fonte grande
+ * @param {number} _ref2.mediumFontSize - Tamanho da fonte média
+ * @param {string} _ref2.fontBold - Nome da fonte em negrito
+ * @param {string} _ref2.fontRegular - Nome da fonte regular
+ * @param {Buffer|string} _ref2.logo - Logo do banco
+ */
+export default function(doc, _ref, _ref2) {
+  const {
     beneficiary,
     beneficiaryAddress,
     agency,
@@ -14,25 +65,26 @@ export default function(
     expirationDay,
     documentDate,
     processingDate,
+    documentType,
+    accept,
     card,
     documentNumber,
     formatedOurNumber,
     formatedValue,
-    accept,
-    billValue,
-    amount,
-    currencyType,
-    documentType,
     descountValue,
     otherDiscounts,
     feeValue,
     outherFees,
     chargeValue,
-    payer,
+    recibo,
     guarantor,
-    instructions
-  },
-  {
+    bank,
+    instructions,
+    currencyType
+  } = _ref
+
+  const {
+    startY,
     startX,
     smallGutterY,
     smallGutterX,
@@ -48,36 +100,44 @@ export default function(
     mediumFontSize,
     fontBold,
     fontRegular,
-    logo,
-    bodyStarY
-  }
-) {
-  const startY = bodyStarY
+    logo
+  } = _ref2
+
   const rightSize = 160
   const widthStringValue = doc.widthOfString(formatedValue)
-  // Restore line
-  doc.lineWidth(line).undash()
 
-  doc.image(logo, startX + smallGutterX, startY, {
+  doc.image(logo, startX + smallGutterX, startY + boxHeight, {
     height: 23
   })
 
-  doc.rect(startX + 120, startY, line, boxHeight).fill(lineColor)
+  // Doc.image(logomarca, startX + smallGutterX, startY + boxHeight * 5 + gutterY + 70, {
+  //  height: 55
+  // });
+
+  doc.rect(startX + 120, startY + boxHeight, line, boxHeight).fill(lineColor)
 
   doc
     .fontSize(largefontSize)
     .font(fontBold)
-    .text('237-2', startX + 130, startY + 8)
+    .text(bank, startX + 130, startY + 8 + boxHeight)
 
-  doc.rect(startX + 170, startY, line, boxHeight).fill(lineColor)
+  doc.rect(startX + 170, startY + boxHeight, line, boxHeight).fill(lineColor)
 
-  doc.fontSize(largefontSize).text(digitableLine, startX + 190, startY + 8)
-
-  doc.rect(startX, startY + boxHeight, tableLimit, line).fill(lineColor)
-
-  // Local de pagamentp
   doc
-    .rect(startX, startY + boxHeight, tableLimit - rightSize, boxHeight)
+    .fontSize(largefontSize)
+    .text('RECIBO DO SACADO', startX + 400, startY + 8 + boxHeight)
+
+  // Doc.rect(startX, startY + boxHeight, tableLimit, line).fill(lineColor);
+
+  // Box
+  // doc.rect(startX, startY + boxHeight, tableLimit, boxHeight).lineWidth(line).stroke(lineColor);
+
+  // doc.fontSize(smallFontSize).font(fontRegular).text('Local de Pagamento', startX + smallGutterX, startY + boxHeight + smallGutterY);
+
+  // doc.fontSize(fontSize).font(fontBold).text(recibo.paymentPlace, startX + gutterX, startY + boxHeight + gutterY);
+
+  doc
+    .rect(startX, startY + boxHeight * 2, tableLimit - rightSize, boxHeight)
     .lineWidth(line)
     .stroke(lineColor)
 
@@ -85,54 +145,7 @@ export default function(
     .fontSize(smallFontSize)
     .font(fontRegular)
     .text(
-      'Local de Pagamento',
-      startX + smallGutterX,
-      startY + boxHeight + smallGutterY
-    )
-
-  doc
-    .fontSize(fontSize)
-    .font(fontBold)
-    .text(paymentPlace, startX + gutterX, startY + boxHeight + gutterY)
-
-  doc
-    .rect(
-      startX + tableLimit - rightSize,
-      startY + boxHeight,
-      rightSize,
-      boxHeight
-    )
-    .lineWidth(line)
-    .stroke(lineColor)
-
-  doc
-    .fontSize(smallFontSize)
-    .font(fontRegular)
-    .text(
-      'Data de Vencimento',
-      startX + tableLimit - rightSize + smallGutterX,
-      startY + boxHeight + smallGutterY
-    )
-
-  doc
-    .fontSize(mediumFontSize)
-    .font(fontBold)
-    .text(
-      formatDate(expirationDay),
-      startX + tableLimit - rightSize + 90,
-      startY + boxHeight + gutterX
-    )
-
-  doc
-    .rect(startX, startY + boxHeight * 2, tableLimit, boxHeight)
-    .lineWidth(line)
-    .stroke(lineColor)
-
-  doc
-    .fontSize(smallFontSize)
-    .font(fontRegular)
-    .text(
-      'Beneficiário',
+      'Cedente',
       startX + smallGutterX,
       startY + boxHeight * 2 + smallGutterY
     )
@@ -151,7 +164,7 @@ export default function(
     .rect(
       startX + tableLimit - rightSize,
       startY + boxHeight * 2,
-      rightSize,
+      80,
       boxHeight
     )
     .lineWidth(line)
@@ -161,8 +174,36 @@ export default function(
     .fontSize(smallFontSize)
     .font(fontRegular)
     .text(
-      'Agencia/Código do Cedente',
+      'Agencia/Código Cedente',
       startX + tableLimit - rightSize + smallGutterX,
+      startY + boxHeight * 2 + smallGutterY
+    )
+
+  doc
+    .fontSize(8)
+    .font(fontRegular)
+    .text(
+      `${agency}${agencyDigit} / ${account}${accountDigit}`,
+      startX + tableLimit - rightSize + smallGutterX,
+      startY + boxHeight * 2 + gutterX + 5
+    )
+
+  doc
+    .rect(
+      startX + tableLimit - rightSize / 2,
+      startY + boxHeight * 2,
+      rightSize / 2,
+      boxHeight
+    )
+    .lineWidth(line)
+    .stroke(lineColor)
+
+  doc
+    .fontSize(smallFontSize)
+    .font(fontRegular)
+    .text(
+      'Vencimento',
+      startX + tableLimit - rightSize + smallGutterX + rightSize / 2,
       startY + boxHeight * 2 + smallGutterY
     )
 
@@ -170,9 +211,9 @@ export default function(
     .fontSize(fontSize)
     .font(fontRegular)
     .text(
-      `${agency}-${agencyDigit} / ${account}-${accountDigit}`,
-      startX + tableLimit - rightSize + 80,
-      startY + boxHeight * 2 + gutterX
+      formatDate(expirationDay),
+      startX + tableLimit - rightSize + rightSize / 2 + smallGutterX,
+      startY + boxHeight * 2 + gutterX + 5
     )
 
   doc
@@ -184,7 +225,7 @@ export default function(
     .fontSize(smallFontSize)
     .font(fontRegular)
     .text(
-      'Data do documento',
+      'Data documento',
       startX + smallGutterX,
       startY + boxHeight * 3 + smallGutterY
     )
@@ -207,7 +248,7 @@ export default function(
     .fontSize(smallFontSize)
     .font(fontRegular)
     .text(
-      'N° documento',
+      'Número documento',
       startX + 100 + smallGutterX,
       startY + boxHeight * 3 + smallGutterY
     )
@@ -230,7 +271,7 @@ export default function(
     .fontSize(6)
     .font(fontRegular)
     .text(
-      'Espécie do doc.',
+      'Esp. doc.',
       startX + 240 + smallGutterX,
       startY + boxHeight * 3 + smallGutterY
     )
@@ -243,6 +284,7 @@ export default function(
       startX + 240 + gutterX,
       startY + boxHeight * 3 + gutterX
     )
+
   doc
     .rect(startX + 295, startY + boxHeight * 3, 30, boxHeight)
     .lineWidth(line)
@@ -320,6 +362,20 @@ export default function(
     )
 
   doc
+    .rect(startX, startY + boxHeight * 4, 50, boxHeight)
+    .lineWidth(line)
+    .stroke(lineColor)
+
+  doc
+    .fontSize(smallFontSize)
+    .font(fontRegular)
+    .text(
+      'Uso do Banco',
+      startX + smallGutterX,
+      startY + boxHeight * 4 + smallGutterY
+    )
+
+  doc
     .rect(startX, startY + boxHeight * 4, 100, boxHeight)
     .lineWidth(line)
     .stroke(lineColor)
@@ -328,10 +384,15 @@ export default function(
     .fontSize(smallFontSize)
     .font(fontRegular)
     .text(
-      'Uso do Banco / CIP',
-      startX + smallGutterX,
+      'CIP',
+      startX + smallGutterX + 50,
       startY + boxHeight * 4 + smallGutterY
     )
+
+  doc
+    .fontSize(fontSize)
+    .font(fontRegular)
+    .text('000', startX + smallGutterX + 50, startY + boxHeight * 4 + gutterX)
 
   doc
     .rect(startX + 100, startY + boxHeight * 4, 30, boxHeight)
@@ -361,7 +422,7 @@ export default function(
     .fontSize(smallFontSize)
     .font(fontRegular)
     .text(
-      'Espécie',
+      'Espécie Moeda',
       startX + 130 + smallGutterX,
       startY + boxHeight * 4 + smallGutterY
     )
@@ -390,11 +451,6 @@ export default function(
     )
 
   doc
-    .fontSize(fontSize)
-    .font(fontRegular)
-    .text(amount, startX + 185 + gutterX, startY + boxHeight * 4 + gutterX)
-
-  doc
     .rect(
       startX + 240,
       startY + boxHeight * 4,
@@ -413,10 +469,6 @@ export default function(
       startY + boxHeight * 4 + smallGutterY
     )
 
-  doc
-    .fontSize(fontSize)
-    .font(fontRegular)
-    .text(billValue, startX + 240 + gutterX, startY + boxHeight * 4 + gutterX)
   // Right side
   doc
     .rect(
@@ -476,20 +528,10 @@ export default function(
     .stroke(lineColor)
 
   doc
-    .rect(
-      startX + tableLimit - rightSize,
-      startY + boxHeight * 5,
-      rightSize,
-      boxHeight
-    )
-    .lineWidth(line)
-    .stroke(lineColor)
-
-  doc
     .fontSize(smallFontSize)
     .font(fontRegular)
     .text(
-      '(-) Desconto / Abatimento',
+      '(-) Desconto / Adiantamento',
       startX + tableLimit - rightSize + smallGutterX,
       startY + boxHeight * 5 + smallGutterY
     )
@@ -573,7 +615,7 @@ export default function(
     .fontSize(smallFontSize)
     .font(fontRegular)
     .text(
-      '(-) Outros Acrécimos',
+      '(-) Acrécimos',
       startX + tableLimit - rightSize + smallGutterX,
       startY + boxHeight * 8 + smallGutterY
     )
@@ -620,11 +662,16 @@ export default function(
     .lineWidth(line)
     .stroke(lineColor)
 
+  // Payer info box
+  doc
+    .rect(startX, startY + boxHeight * 10, tableLimit, boxHeight * 3)
+    .stroke(lineColor)
+
   doc
     .fontSize(smallFontSize)
     .font(fontRegular)
     .text(
-      'Pagador',
+      'Sacado',
       startX + smallGutterX,
       startY + boxHeight * 10 + smallGutterY
     )
@@ -633,7 +680,7 @@ export default function(
     .fontSize(fontSize)
     .font(fontBold)
     .text(
-      payer.name + ' - ' + payer.registerNumber,
+      recibo.payer.name + ' - ' + recibo.payer.registerNumber,
       startX + 30,
       startY + boxHeight * 10 + 3
     )
@@ -642,13 +689,13 @@ export default function(
     .fontSize(fontSize)
     .font(fontRegular)
     .text(
-      payer.street +
+      recibo.payer.street +
         ', ' +
-        payer.number +
+        recibo.payer.number +
         ' ' +
-        payer.complement +
+        recibo.payer.complement +
         ' - ' +
-        payer.district,
+        recibo.payer.district,
       startX + 30,
       startY + boxHeight * 10 + 13
     )
@@ -657,7 +704,11 @@ export default function(
     .fontSize(fontSize)
     .font(fontRegular)
     .text(
-      payer.city + ' - ' + payer.state + ' - CEP: ' + payer.postalCode,
+      recibo.payer.city +
+        ' - ' +
+        recibo.payer.state +
+        ' - CEP: ' +
+        recibo.payer.postalCode,
       startX + 30,
       startY + boxHeight * 10 + 23
     )
@@ -667,7 +718,7 @@ export default function(
       .fontSize(smallFontSize)
       .font(fontRegular)
       .text(
-        'Sacador/Avalista',
+        'Sacador/Cedente',
         startX + smallGutterX,
         startY + boxHeight * 10 + 40
       )
@@ -676,7 +727,7 @@ export default function(
       .fontSize(7)
       .font(fontRegular)
       .text(
-        guarantor.name + ' - ' + guarantor.registerNumber,
+        recibo.guarantor.name + ' - ' + recibo.guarantor.registerNumber,
         startX + 50,
         startY + boxHeight * 10 + 43
       )
@@ -685,7 +736,11 @@ export default function(
       .fontSize(7)
       .font(fontRegular)
       .text(
-        guarantor.street + ', ' + guarantor.number + ', ' + guarantor.district,
+        recibo.guarantor.street +
+          ', ' +
+          recibo.guarantor.number +
+          ', ' +
+          recibo.guarantor.district,
         startX + 50,
         startY + boxHeight * 10 + 53
       )
@@ -694,11 +749,11 @@ export default function(
       .fontSize(7)
       .font(fontRegular)
       .text(
-        guarantor.city +
+        recibo.guarantor.city +
           ' - ' +
-          guarantor.state +
+          recibo.guarantor.state +
           ' - CEP: ' +
-          guarantor.postalCode,
+          recibo.guarantor.postalCode,
         startX + 50,
         startY + boxHeight * 10 + 63
       )
@@ -708,7 +763,7 @@ export default function(
     .fontSize(smallFontSize)
     .font(fontRegular)
     .text(
-      'Auntênticação Mecânica - Ficha de Compensação',
+      'Auntênticação Mecânica - Recibo',
       tableLimit - 115,
       startY + boxHeight * 13 + 5
     )

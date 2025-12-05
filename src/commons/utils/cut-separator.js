@@ -1,4 +1,4 @@
-export default function (doc, startY) {
+export default function(doc, startY) {
   const marginLeft = doc.page.margins.left
   const pageWidth = doc.page.width
 

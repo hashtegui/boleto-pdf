@@ -73,7 +73,7 @@ import formatDate from '../../commons/utils/format-date'
  * @param {Buffer|string} _ref2.logo - Logo do banco (imagem)
  * @param {number} _ref2.bodyStarY - Posição Y inicial para o corpo do boleto
  */
-export default function (doc, _ref, _ref2) {
+export default function(doc, _ref, _ref2) {
   const {
     digitableLine,
     paymentPlace,

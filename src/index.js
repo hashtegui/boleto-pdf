@@ -1,9 +1,11 @@
 import generateBbPdf from './bb/generate-pdf'
 import generateBradescoPdf from './bradesco/generate-pdf'
+import generateCaixaPdf from './caixa/generate-pdf'
 import generateOmniPdf from './omni/generate-pdf'
 
 export default {
   bradesco: generateBradescoPdf,
   omni: generateOmniPdf,
-  bb: generateBbPdf
+  bb: generateBbPdf,
+  caixa: generateCaixaPdf
 }

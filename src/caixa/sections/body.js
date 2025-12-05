@@ -1,8 +1,60 @@
 import formatDate from '../../commons/utils/format-date'
 
-export default function(
-  doc,
-  {
+/**
+ * Renderiza o corpo (body/ficha de compensação) do boleto da Caixa Econômica Federal
+ *
+ * @param {Object} doc - Instância do PDFKit document
+ * @param {Object} _ref - Dados do boleto
+ * @param {string} _ref.digitableLine - Linha digitável do boleto
+ * @param {string} _ref.paymentPlace - Local de pagamento
+ * @param {string} _ref.beneficiary - Nome do beneficiário (cedente)
+ * @param {string} _ref.beneficiaryAddress - Endereço do beneficiário
+ * @param {string} _ref.agency - Número da agência
+ * @param {string} _ref.agencyDigit - Dígito verificador da agência
+ * @param {string} _ref.account - Número da conta
+ * @param {string} _ref.accountDigit - Dígito verificador da conta
+ * @param {Date|string} _ref.expirationDay - Data de vencimento
+ * @param {Date|string} _ref.documentDate - Data do documento
+ * @param {Date|string} _ref.processingDate - Data de processamento
+ * @param {string} _ref.card - Carteira
+ * @param {string} _ref.documentNumber - Número do documento
+ * @param {string} _ref.formatedOurNumber - Nosso número formatado
+ * @param {string} _ref.formatedValue - Valor do documento formatado
+ * @param {string} _ref.accept - Aceite (S/N)
+ * @param {string} _ref.billValue - Valor
+ * @param {string} _ref.amount - Quantidade
+ * @param {string} _ref.currencyType - Tipo de moeda
+ * @param {string} _ref.documentType - Tipo do documento
+ * @param {string} _ref.descountValue - Valor de desconto
+ * @param {string} _ref.otherDiscounts - Outras deduções
+ * @param {string} _ref.feeValue - Valor de mora/multa
+ * @param {string} _ref.outherFees - Outros acréscimos
+ * @param {string} _ref.chargeValue - Valor cobrado
+ * @param {Object} _ref.payer - Dados do pagador
+ * @param {Object} [_ref.guarantor] - Dados do avalista (opcional)
+ * @param {string} _ref.instructions - Instruções de pagamento
+ * @param {string} _ref.bank - Código do banco
+ * @param {Object} _ref2 - Configurações de layout
+ * @param {number} _ref2.startX - Posição X inicial
+ * @param {number} _ref2.smallGutterY - Espaçamento vertical pequeno
+ * @param {number} _ref2.smallGutterX - Espaçamento horizontal pequeno
+ * @param {number} _ref2.line - Espessura da linha
+ * @param {number} _ref2.tableLimit - Limite da tabela
+ * @param {string} _ref2.lineColor - Cor das linhas
+ * @param {number} _ref2.boxHeight - Altura das caixas
+ * @param {number} _ref2.gutterX - Espaçamento horizontal
+ * @param {number} _ref2.gutterY - Espaçamento vertical
+ * @param {number} _ref2.smallFontSize - Tamanho da fonte pequena
+ * @param {number} _ref2.fontSize - Tamanho da fonte padrão
+ * @param {number} _ref2.largefontSize - Tamanho da fonte grande
+ * @param {number} _ref2.mediumFontSize - Tamanho da fonte média
+ * @param {string} _ref2.fontBold - Nome da fonte em negrito
+ * @param {string} _ref2.fontRegular - Nome da fonte regular
+ * @param {Buffer|string} _ref2.logo - Logo do banco
+ * @param {number} _ref2.bodyStarY - Posição Y inicial para o corpo do boleto
+ */
+export default function(doc, _ref, _ref2) {
+  const {
     digitableLine,
     paymentPlace,
     beneficiary,
@@ -30,9 +82,11 @@ export default function(
     chargeValue,
     payer,
     guarantor,
-    instructions
-  },
-  {
+    instructions,
+    bank
+  } = _ref
+
+  const {
     startX,
     smallGutterY,
     smallGutterX,
@@ -50,8 +104,8 @@ export default function(
     fontRegular,
     logo,
     bodyStarY
-  }
-) {
+  } = _ref2
+
   const startY = bodyStarY
   const rightSize = 160
   const widthStringValue = doc.widthOfString(formatedValue)
@@ -62,12 +116,16 @@ export default function(
     height: 23
   })
 
+  // Doc.image(logomarca, startX + smallGutterX, startY + boxHeight * 5 + gutterY + 70, {
+  //  height: 55
+  // });
+
   doc.rect(startX + 120, startY, line, boxHeight).fill(lineColor)
 
   doc
     .fontSize(largefontSize)
     .font(fontBold)
-    .text('237-2', startX + 130, startY + 8)
+    .text(bank, startX + 130, startY + 8)
 
   doc.rect(startX + 170, startY, line, boxHeight).fill(lineColor)
 
@@ -109,7 +167,7 @@ export default function(
     .fontSize(smallFontSize)
     .font(fontRegular)
     .text(
-      'Data de Vencimento',
+      'Vencimento',
       startX + tableLimit - rightSize + smallGutterX,
       startY + boxHeight + smallGutterY
     )
@@ -161,7 +219,7 @@ export default function(
     .fontSize(smallFontSize)
     .font(fontRegular)
     .text(
-      'Agencia/Código do Cedente',
+      'Agencia/Código Beneficiário',
       startX + tableLimit - rightSize + smallGutterX,
       startY + boxHeight * 2 + smallGutterY
     )
@@ -170,7 +228,7 @@ export default function(
     .fontSize(fontSize)
     .font(fontRegular)
     .text(
-      `${agency}-${agencyDigit} / ${account}-${accountDigit}`,
+      `${agency}${agencyDigit} / ${account}${accountDigit}`,
       startX + tableLimit - rightSize + 80,
       startY + boxHeight * 2 + gutterX
     )
@@ -207,7 +265,7 @@ export default function(
     .fontSize(smallFontSize)
     .font(fontRegular)
     .text(
-      'N° documento',
+      'Número documento',
       startX + 100 + smallGutterX,
       startY + boxHeight * 3 + smallGutterY
     )
@@ -230,7 +288,7 @@ export default function(
     .fontSize(6)
     .font(fontRegular)
     .text(
-      'Espécie do doc.',
+      'Esp. doc.',
       startX + 240 + smallGutterX,
       startY + boxHeight * 3 + smallGutterY
     )
@@ -320,6 +378,20 @@ export default function(
     )
 
   doc
+    .rect(startX, startY + boxHeight * 4, 50, boxHeight)
+    .lineWidth(line)
+    .stroke(lineColor)
+
+  doc
+    .fontSize(smallFontSize)
+    .font(fontRegular)
+    .text(
+      'Uso do Banco',
+      startX + smallGutterX,
+      startY + boxHeight * 4 + smallGutterY
+    )
+
+  doc
     .rect(startX, startY + boxHeight * 4, 100, boxHeight)
     .lineWidth(line)
     .stroke(lineColor)
@@ -328,10 +400,15 @@ export default function(
     .fontSize(smallFontSize)
     .font(fontRegular)
     .text(
-      'Uso do Banco / CIP',
-      startX + smallGutterX,
+      'CIP',
+      startX + smallGutterX + 50,
       startY + boxHeight * 4 + smallGutterY
     )
+
+  doc
+    .fontSize(fontSize)
+    .font(fontRegular)
+    .text('000', startX + smallGutterX + 50, startY + boxHeight * 4 + gutterX)
 
   doc
     .rect(startX + 100, startY + boxHeight * 4, 30, boxHeight)
@@ -624,7 +701,7 @@ export default function(
     .fontSize(smallFontSize)
     .font(fontRegular)
     .text(
-      'Pagador',
+      'Sacado',
       startX + smallGutterX,
       startY + boxHeight * 10 + smallGutterY
     )
@@ -667,7 +744,7 @@ export default function(
       .fontSize(smallFontSize)
       .font(fontRegular)
       .text(
-        'Sacador/Avalista',
+        'Sacador/Cedente',
         startX + smallGutterX,
         startY + boxHeight * 10 + 40
       )

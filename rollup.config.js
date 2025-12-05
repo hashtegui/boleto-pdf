@@ -66,7 +66,9 @@ export default {
       'src/bradesco/logos/logo-bradesco.jpg': 'dist/logos/logo-bradesco.jpg',
       'src/omni/logos/logo-omni.jpg': 'dist/logos/logo-omni.jpg',
       'src/bb/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
-      'src/bb/logos/logo-bb.png': 'dist/logos/logo-bb.png'
+      'src/bb/logos/logo-bb.png': 'dist/logos/logo-bb.png',
+      'src/caixa/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
+      'src/caixa/logos/logo-caixa.jpg': 'dist/logos/logo-caixa.jpg'
     }),
     filesize()
   ],

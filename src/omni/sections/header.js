@@ -1,6 +1,6 @@
 import formatDate from '../../commons/utils/format-date'
 
-export default function (
+export default function(
   doc,
   {
     digitableLine,

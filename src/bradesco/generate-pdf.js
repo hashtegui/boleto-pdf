@@ -6,7 +6,7 @@ import cutSeparator from '../commons/utils/cut-separator'
 import header from './sections/header'
 import body from './sections/body'
 
-export default function (bill) {
+export default function(bill) {
   return new Promise((resolve, reject) => {
     const buffers = []
     const MARGIN = 25

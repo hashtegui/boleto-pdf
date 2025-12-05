@@ -72,7 +72,7 @@ import formatDate from '../../commons/utils/format-date'
  * @param {string} _ref2.fontRegular - Nome da fonte regular
  * @param {Buffer|string} _ref2.logo - Logo do banco (imagem)
  */
-export default function (doc, _ref, _ref2) {
+export default function(doc, _ref, _ref2) {
   const {
     beneficiary,
     beneficiaryAddress,
