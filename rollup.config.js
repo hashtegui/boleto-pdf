@@ -1,8 +1,8 @@
 import {readFileSync} from 'fs'
 import {resolve} from 'path'
+import chalk from 'chalk'
 import {sync as copySync} from 'cp-file'
 import gzipSize from 'gzip-size'
-import chalk from 'chalk'
 import prettyBytes from 'pretty-bytes'
 import babel from 'rollup-plugin-babel'
 import localResolve from 'rollup-plugin-local-resolve'
@@ -64,7 +64,9 @@ export default {
       'src/bradesco/fonts/roboto-bold.ttf': 'dist/fonts/roboto-bold.ttf',
       'src/bradesco/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
       'src/bradesco/logos/logo-bradesco.jpg': 'dist/logos/logo-bradesco.jpg',
-      'src/omni/logos/logo-omni.jpg': 'dist/logos/logo-omni.jpg'
+      'src/omni/logos/logo-omni.jpg': 'dist/logos/logo-omni.jpg',
+      'src/bb/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
+      'src/bb/logos/logo-bb.png': 'dist/logos/logo-bb.png'
     }),
     filesize()
   ],
