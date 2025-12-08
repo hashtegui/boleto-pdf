@@ -4,8 +4,8 @@
   "description": "boleto pdf generetor ",
   "main": "dist/index.js",
   "scripts": {
-    "prettier": "prettier --single-quote --no-semi --no-bracket-spacing --trailing-comma none --write \"src/**/*.js\" --write \"test/**/*.js\" --write rollup.config.js",
-    "pretest": "npm run prettier && xo --fix",
+    "prettier": "prettier --write \"src/**/*.js\" \"test/**/*.js\" rollup.config.js",
+    "pretest": "npm run prettier",
     "test": "jest",
     "test:watch": "jest --watch",
     "build": "rollup -c",
@@ -46,24 +46,9 @@
     "mockdate": "^2.0.2",
     "prettier": "^1.19.1",
     "pretty-bytes": "^5.0.0",
-    "rollup": "^0.63.0",
+    "rollup": "4.22.4",
     "rollup-plugin-babel": "^3.0.4",
-    "rollup-plugin-local-resolve": "^1.0.7",
-    "xo": "^0.21.1"
-  },
-  "xo": {
-    "semicolon": false,
-    "space": true,
-    "envs": [
-      "node",
-      "jest"
-    ],
-    "rules": {
-      "no-mixed-operators": 0
-    },
-    "ignores": [
-      "example/**"
-    ]
+    "rollup-plugin-local-resolve": "^1.0.7"
   },
   "files": [
     "dist"

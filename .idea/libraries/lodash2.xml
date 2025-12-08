@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="lodash2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/node_modules/.pnpm/eslint-ast-utils@1.1.0/node_modules/lodash.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

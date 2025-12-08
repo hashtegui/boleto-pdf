@@ -68,7 +68,9 @@ export default {
       'src/bb/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
       'src/bb/logos/logo-bb.png': 'dist/logos/logo-bb.png',
       'src/caixa/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
-      'src/caixa/logos/logo-caixa.jpg': 'dist/logos/logo-caixa.jpg'
+      'src/caixa/logos/logo-caixa.jpg': 'dist/logos/logo-caixa.jpg',
+      'src/itau/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
+      'src/itau/logos/logo-itau.jpg': 'dist/logos/logo-itau.jpg'
     }),
     filesize()
   ],
