@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`generatePdf main functionality generatePdf should generate a valid pdf file 1`] = `"3330af93464679ce8ea7c911047d75ebe6b72142"`;

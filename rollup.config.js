@@ -82,7 +82,9 @@ export default {
         'dist/fonts/roboto-regular.ttf',
       './src/santander/fonts/roboto-bold.ttf': 'dist/fonts/roboto-bold.ttf',
       './src/santander/logos/logo-santander.jpg':
-        'dist/logos/logo-santander.jpg'
+        'dist/logos/logo-santander.jpg',
+      './src/safra/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
+      './src/safra/logos/logo-safra.jpg': 'dist/logos/logo-safra.jpg'
     }),
     filesize()
   ],
