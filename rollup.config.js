@@ -1,5 +1,6 @@
 import {readFileSync} from 'fs'
-import {resolve} from 'path'
+import {resolve, dirname} from 'path'
+import {fileURLToPath} from 'url'
 import chalk from 'chalk'
 import {sync as copySync} from 'cp-file'
 import gzipSize from 'gzip-size'
@@ -7,12 +8,17 @@ import prettyBytes from 'pretty-bytes'
 import babel from 'rollup-plugin-babel'
 import localResolve from 'rollup-plugin-local-resolve'
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
 const pkg = JSON.parse(readFileSync('./package.json'))
 const dependencies = Object.keys(pkg.dependencies || {}).concat(['path'])
 
 function filesize() {
   return {
-    ongenerate({file}, {code}) {
+    writeBundle(options, bundle) {
+      const file = options.file
+      const code = Object.values(bundle)[0].code
       const size = gzipSize.sync(code)
       const prettySize = prettyBytes(size)
       const color = size < 5000 ? 'green' : size > 40000 ? 'red' : 'yellow'
@@ -25,7 +31,7 @@ function filesize() {
 
 function copy(files) {
   return {
-    ongenerate() {
+    writeBundle() {
       Object.entries(files).forEach(([src, dest]) => {
         try {
           copySync(resolve(__dirname, src), resolve(__dirname, dest))
@@ -41,7 +47,7 @@ function copy(files) {
 }
 
 export default {
-  input: 'src/index.js',
+  input: './src/index.js',
   plugins: [
     babel({
       babelrc: false,
@@ -61,16 +67,22 @@ export default {
     }),
     localResolve(),
     copy({
-      'src/bradesco/fonts/roboto-bold.ttf': 'dist/fonts/roboto-bold.ttf',
-      'src/bradesco/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
-      'src/bradesco/logos/logo-bradesco.jpg': 'dist/logos/logo-bradesco.jpg',
-      'src/omni/logos/logo-omni.jpg': 'dist/logos/logo-omni.jpg',
-      'src/bb/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
-      'src/bb/logos/logo-bb.png': 'dist/logos/logo-bb.png',
-      'src/caixa/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
-      'src/caixa/logos/logo-caixa.jpg': 'dist/logos/logo-caixa.jpg',
-      'src/itau/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
-      'src/itau/logos/logo-itau.jpg': 'dist/logos/logo-itau.jpg'
+      './src/bradesco/fonts/roboto-bold.ttf': 'dist/fonts/roboto-bold.ttf',
+      './src/bradesco/fonts/roboto-regular.ttf':
+        'dist/fonts/roboto-regular.ttf',
+      './src/bradesco/logos/logo-bradesco.jpg': 'dist/logos/logo-bradesco.jpg',
+      './src/omni/logos/logo-omni.jpg': 'dist/logos/logo-omni.jpg',
+      './src/bb/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
+      './src/bb/logos/logo-bb.png': 'dist/logos/logo-bb.png',
+      './src/caixa/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
+      './src/caixa/logos/logo-caixa.jpg': 'dist/logos/logo-caixa.jpg',
+      './src/itau/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
+      './src/itau/logos/logo-itau.jpg': 'dist/logos/logo-itau.jpg',
+      './src/santander/fonts/roboto-regular.ttf':
+        'dist/fonts/roboto-regular.ttf',
+      './src/santander/fonts/roboto-bold.ttf': 'dist/fonts/roboto-bold.ttf',
+      './src/santander/logos/logo-santander.jpg':
+        'dist/logos/logo-santander.jpg'
     }),
     filesize()
   ],
