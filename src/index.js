@@ -5,6 +5,7 @@ import generateItauPdf from './itau/generate-pdf'
 import generateOmniPdf from './omni/generate-pdf'
 import generateSantanderPdf from './santander/generate-pdf'
 import generateSafraPdf from './safra/generate-pdf'
+import generateSicoobPdf from './sicoob/generate-pdf'
 
 export default {
   bradesco: generateBradescoPdf,
@@ -13,5 +14,6 @@ export default {
   caixa: generateCaixaPdf,
   itau: generateItauPdf,
   santander: generateSantanderPdf,
-  safra: generateSafraPdf
+  safra: generateSafraPdf,
+  sicoob: generateSicoobPdf
 }

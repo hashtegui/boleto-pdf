@@ -84,7 +84,10 @@ export default {
       './src/santander/logos/logo-santander.jpg':
         'dist/logos/logo-santander.jpg',
       './src/safra/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
-      './src/safra/logos/logo-safra.jpg': 'dist/logos/logo-safra.jpg'
+      './src/safra/logos/logo-safra.jpg': 'dist/logos/logo-safra.jpg',
+      './src/sicoob/fonts/roboto-regular.ttf': 'dist/fonts/roboto-regular.ttf',
+      './src/sicoob/fonts/roboto-bold.ttf': 'dist/fonts/roboto-bold.ttf',
+      './src/sicoob/logos/logo-sicoob.png': 'dist/logos/logo-sicoob.png'
     }),
     filesize()
   ],
